@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { PurchaseEvents } from '../core/enums/events/purchase-events';
 
 import { PrismaService } from '../database/prisma/prisma.service';
+import { KafkaService } from '../messaging/kafka.service';
 import { CreatePurchaseDto } from './dtos/create-purchase.dto';
 import { ProductsService } from './products.service';
 
@@ -8,6 +10,7 @@ import { ProductsService } from './products.service';
 export class PurchasesService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly kafkaService: KafkaService,
     private readonly productsService: ProductsService,
   ) {}
 
@@ -37,6 +40,18 @@ export class PurchasesService {
 
     const purchase = await this.prisma.purchase.create({
       data: { customerId, productId },
+      include: { customer: true, product: true },
+    });
+
+    this.kafkaService.emit(PurchaseEvents.NEW_PURCHASE, {
+      customer: {
+        authUserId: purchase.customer.authUserId,
+      },
+      product: {
+        id: purchase.product.id,
+        title: purchase.product.title,
+        slug: purchase.product.slug,
+      },
     });
 
     return purchase;

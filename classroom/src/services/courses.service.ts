@@ -22,9 +22,10 @@ export class CoursesService {
     return this.prisma.course.findUnique({ where: { slug } });
   }
 
-  async create({ title }: CreateCourseDto) {
-    const slug = slugify(title, { lower: true, trim: true, remove: /\./ });
-
+  async create({
+    title,
+    slug = slugify(title, { lower: true, trim: true, remove: /\./ }),
+  }: CreateCourseDto) {
     const courseWithSameSlug = await this.findBySlug(slug);
 
     if (!!courseWithSameSlug) {
@@ -33,7 +34,9 @@ export class CoursesService {
       );
     }
 
-    const course = await this.prisma.course.create({ data: { title, slug } });
+    const course = await this.prisma.course.create({
+      data: { title, slug: slug },
+    });
 
     return course;
   }
