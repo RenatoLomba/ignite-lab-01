@@ -1,0 +1,17 @@
+query Me {
+  me {
+    authUserId
+    enrollments {
+      course {
+        id
+        title
+      }
+    }
+    purchases {
+      product {
+        id
+        title
+      }
+    }
+  }
+}
