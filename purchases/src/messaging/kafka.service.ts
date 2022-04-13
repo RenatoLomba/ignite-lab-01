@@ -9,6 +9,7 @@ export class KafkaService
 {
   constructor(configService: ConfigService) {
     // Config Kafka client to emit messages
+    // configService.get('KAFKA_BROKERS')
     super({
       client: {
         clientId: 'purchases',

@@ -1,0 +1,7 @@
+node_modules
+.git
+.vscode
+dist
+yarn-error.log
+.env
+.env.*
