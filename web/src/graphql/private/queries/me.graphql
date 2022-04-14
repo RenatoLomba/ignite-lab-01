@@ -2,12 +2,16 @@ query Me {
   me {
     authUserId
     enrollments {
+      id
       course {
         id
         title
+        slug
       }
+      createdAt
     }
     purchases {
+      id
       product {
         id
         title
